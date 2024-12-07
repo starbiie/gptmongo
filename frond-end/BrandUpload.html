@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Brand Details</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-control-file {
+            margin-top: 10px;
+        }
+        .alert {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Upload Brand Details</h1>
+        <form id="uploadForm" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+                <div class="invalid-feedback">
+                    Please provide a name.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="tagline">Tagline:</label>
+                <input type="text" class="form-control" id="tagline" name="tagline" required>
+                <div class="invalid-feedback">
+                    Please provide a tagline.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="missionStatement">Mission Statement:</label>
+                <input type="text" class="form-control" id="missionStatement" name="missionStatement" required>
+                <div class="invalid-feedback">
+                    Please provide a mission statement.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="coreValues">Core Values (comma-separated):</label>
+                <input type="text" class="form-control" id="coreValues" name="coreValues" required>
+                <div class="invalid-feedback">
+                    Please provide core values.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="logo">Logo:</label>
+                <input type="file" class="form-control-file" id="logo" name="logo" required>
+                <div class="invalid-feedback">
+                    Please provide a logo.
+                </div>
+            </div>
+            <div id="imageInputs">
+                <div class="form-group">
+                    <label for="image1">Image 1:</label>
+                    <input type="file" class="form-control-file" id="image1" name="images" required>
+                    <div class="invalid-feedback">
+                        Please provide an image.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="image2">Image 2:</label>
+                    <input type="file" class="form-control-file" id="image2" name="images" required>
+                    <div class="invalid-feedback">
+                        Please provide an image.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="image3">Image 3:</label>
+                    <input type="file" class="form-control-file" id="image3" name="images" required>
+                    <div class="invalid-feedback">
+                        Please provide an image.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="image4">Image 4:</label>
+                    <input type="file" class="form-control-file" id="image4" name="images" required>
+                    <div class="invalid-feedback">
+                        Please provide an image.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="image5">Image 5:</label>
+                    <input type="file" class="form-control-file" id="image5" name="images" required>
+                    <div class="invalid-feedback">
+                        Please provide an image.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="image6">Image 6:</label>
+                    <input type="file" class="form-control-file" id="image6" name="images" required>
+                    <div class="invalid-feedback">
+                        Please provide an image.
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        <div id="message" class="mt-3 alert alert-info" style="display:none;"></div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const imageInputs = document.querySelectorAll('input[name="images"]');
+
+            // Check if exactly 6 images are provided
+            if (imageInputs.length !== 6) {
+                const messageDiv = document.getElementById('message');
+                messageDiv.textContent = 'Please provide exactly 6 images.';
+                messageDiv.style.display = 'block';
+                messageDiv.classList.remove('alert-success');
+                messageDiv.classList.add('alert-danger');
+                return;
+            }
+
+            fetch('/brand-details', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('message');
+                messageDiv.textContent = data.message;
+                messageDiv.style.display = 'block';
+                if (data.success) {
+                    messageDiv.classList.remove('alert-danger');
+                    messageDiv.classList.add('alert-success');
+                } else {
+                    messageDiv.classList.remove('alert-success');
+                    messageDiv.classList.add('alert-danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageDiv = document.getElementById('message');
+                messageDiv.textContent = 'An error occurred while uploading the brand details.';
+                messageDiv.style.display = 'block';
+                messageDiv.classList.remove('alert-success');
+                messageDiv.classList.add('alert-danger');
+            });
+        });
+    </script>
+</body>
+</html>
